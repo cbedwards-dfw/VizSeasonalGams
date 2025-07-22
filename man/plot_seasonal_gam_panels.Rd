@@ -12,6 +12,7 @@ plot_seasonal_gam_panels(
   quant_trimming = 0.01,
   include_cis = TRUE,
   plot_coverage = TRUE,
+  breaks_x = 3,
   verbose = TRUE
 )
 }
@@ -29,6 +30,8 @@ plot_seasonal_gam_panels(
 \item{include_cis}{Should we plot the confidence envelope? Logical, defaults to TRUE}
 
 \item{plot_coverage}{Add histogram at bottom of each panel with data coverage? Logical, defaults to TRUE.}
+
+\item{breaks_x}{Number of ticks to use on the X axis, useful to ensure text is legible. Numeric, defaults to 3.}
 
 \item{verbose}{Provide context? Logical, defaults to TRUE}
 }

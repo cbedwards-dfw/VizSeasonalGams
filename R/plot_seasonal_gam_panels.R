@@ -15,6 +15,7 @@
 #' @param across_increment A numeric value specifying the increment for the plot_across variable. Defaults to 1.
 #' @param quant_trimming A numeric value between 0 and 1 defining quantile-based trimming -- this provides a buffer between the outmost observations and the outmost plot predictions. Defaults to 0.01; increase if plot predictions at the edges are misleading.
 #' @param include_cis Should we plot the confidence envelope? Logical, defaults to TRUE
+#' @param breaks_x Number of ticks to use on the X axis, useful to ensure text is legible. Numeric, defaults to 3.
 #' @param plot_coverage Add histogram at bottom of each panel with data coverage? Logical, defaults to TRUE.
 #' @param verbose Provide context? Logical, defaults to TRUE
 #'
@@ -29,6 +30,7 @@ plot_seasonal_gam_panels = function(model, ## fitted gam model
                                     include_cis = TRUE,
                                     # plot_observations = FALSE, # If TRUE, add data points to plot
                                     plot_coverage = TRUE,
+                                    breaks_x = 3,
                                     verbose = TRUE){ ## If TRUE, add small histogram of data coverage along bottom of each panel
 
   validate_flag(include_cis)
@@ -77,7 +79,8 @@ plot_seasonal_gam_panels = function(model, ## fitted gam model
     gp = dat_panel |>
       ggplot2::ggplot(ggplot2::aes(x = .data[[plot_across]], y = .data$prediction, col = .data[[color_by]], fill = .data[[color_by]])) +
       ggplot2::geom_path(linewidth = 0.8)+
-      ggplot2::scale_x_continuous(labels = VizSeasonalGams::doy_2md)+ ## FRAGILE -- can't handle non-date axis
+      ggplot2::scale_x_continuous(labels = VizSeasonalGams::doy_2md,
+                                  n.breaks = breaks_x)+ ## FRAGILE -- can't handle non-date axis
       ggplot2::labs(y = response,
            x = "",
            title = paste(paste(names(panel_details), ": ", panel_details), collapse = "\n"))
@@ -85,7 +88,8 @@ plot_seasonal_gam_panels = function(model, ## fitted gam model
       gp = dat_panel |>
         ggplot2::ggplot(ggplot2::aes(x = .data[[plot_across]], y = .data$prediction)) +
         ggplot2::geom_path(linewidth = 0.8)+
-        ggplot2::scale_x_continuous(labels = VizSeasonalGams::doy_2md)+ ## FRAGILE -- can't handle non-date axis
+        ggplot2::scale_x_continuous(labels = VizSeasonalGams::doy_2md,
+                                    n.breaks = breaks_x)+ ## FRAGILE -- can't handle non-date axis
         ggplot2::labs(y = response,
                       x = "",
                       title = paste(paste(names(panel_details), ": ", panel_details), collapse = "\n"))
@@ -110,7 +114,8 @@ plot_seasonal_gam_panels = function(model, ## fitted gam model
         ggplot2::scale_y_continuous(n.breaks = 2)+
         ggplot2::geom_col(na.rm = TRUE)+
         ggplot2::scale_x_continuous(limits = ggplot2::layer_scales(gp)$x$range$range,
-                           labels = VizSeasonalGams::doy_2md)+ ## FRAGILE -- can't handle non-date axis
+                           labels = VizSeasonalGams::doy_2md,
+                           n.breaks = breaks_x)+ ## FRAGILE -- can't handle non-date axis
         ggplot2::labs(x = "")
       gp = gp / hist_gp  +
         patchwork::plot_layout(heights = c(10,1), axis_title = "collect", axes = "collect_x")

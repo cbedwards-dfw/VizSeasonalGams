@@ -7,8 +7,11 @@
 <!-- badges: end -->
 
 The goal of VizSeasonalGams is to streamline plotting fitted gams that
-incorporate a seasonal component (e.g., smooths across a `doy` term).
-Future development may generalize these somewhat.
+incorporate a seasonal component (e.g., smooths across day of year).
+While the tools here can work for models that include a smooth of
+interest across any continuous variable, this documentation will default
+to assuming the data and model include `"doy"` which contains day of
+year.
 
 ## Installation
 

@@ -1,5 +1,5 @@
 Package: VizSeasonalGams
-Title: What the Package Does (One Line, Title Case)
+Title: Visualize Fitted MGCV Models With Seasonal Smooths
 Version: 0.0.0.9000
 Authors@R: 
     person("Collin", "Edwards", , "Collin.Edwards@dfw.wa.gov", role = c("aut", "cre"),
@@ -11,3 +11,18 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 URL: https://github.com/cbedwards-dfw/VizSeasonalGams
 BugReports: https://github.com/cbedwards-dfw/VizSeasonalGams/issues
+Imports: 
+    cli,
+    dplyr,
+    ggplot2,
+    grid,
+    mgcv,
+    patchwork,
+    purrr,
+    rlang,
+    stats,
+    tidyr,
+    tidyselect
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

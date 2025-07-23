@@ -6,7 +6,7 @@
 \usage{
 predict_gam(
   model,
-  plot_across = "doy",
+  plot_by = "doy",
   across_increment = 1,
   quant_trimming = 0.01,
   verbose = TRUE
@@ -15,9 +15,9 @@ predict_gam(
 \arguments{
 \item{model}{A GAM model object from mgcv}
 
-\item{plot_across}{A single string specifying the variable to plot across. Defaults to "doy".}
+\item{plot_by}{A single string specifying the variable to plot across. Defaults to "doy".}
 
-\item{across_increment}{A numeric value specifying the increment for the plot_across variable. Defaults to 1.}
+\item{across_increment}{A numeric value specifying the increment for the plot_by variable. Defaults to 1.}
 
 \item{quant_trimming}{A numeric value between 0 and 1 defining quantile-based trimming -- this provides a buffer between the outmost observations and the outmost plot predictions. Defaults to 0.01; increase if plot predictions at the edges are misleading.}
 

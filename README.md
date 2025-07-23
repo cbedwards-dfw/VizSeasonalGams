@@ -11,7 +11,8 @@ incorporate a seasonal component (e.g., smooths across day of year).
 While the tools here can work for models that include a smooth of
 interest across any continuous variable, this documentation will default
 to assuming the data and model include `"doy"` which contains day of
-year.
+year. You can provide an alternate variable name with the optional
+`plot_by` variable.
 
 ## Installation
 

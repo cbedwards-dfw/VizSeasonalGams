@@ -8,6 +8,10 @@ grid_panels(
   panels_df,
   column_var,
   row_var,
+  scales_x = c("free", "fixed_column", "fixed_row", "fixed_all", "fixed_combination"),
+  scales_y = c("free", "fixed_column", "fixed_row", "fixed_all", "fixed_combination"),
+  scales_y_coverage = c("free", "fixed_column", "fixed_row", "fixed_all",
+    "fixed_combination"),
   panel_titles = FALSE,
   col_title_ratio = 30,
   row_title_ratio = 30,
@@ -23,6 +27,12 @@ grid_panels(
 \item{column_var}{1 dimensional character vector of variable defining the columns of the grid. Must be factor variable present in \code{panels_df}.}
 
 \item{row_var}{as \code{column_var}, but defines the rows of the grid}
+
+\item{scales_x}{Allows shared x limits for all panels within each column ("fixed_column"), or each row ("fixed_row"), each column x row combinations ("fixed_combination"; useful when more than one panel matches a row x column criterion). Defaults to allowing each panel to have its own x scale ("free").}
+
+\item{scales_y}{As \code{scales_x}, but for y limits. Is not applied to the optional coverage plots within each panel.}
+
+\item{scales_y_coverage}{As \code{scales_y}, but only applied to optional coverage plots.}
 
 \item{panel_titles}{Include all panel information in panel title even if redundant with rows/panels? Useful for debugging or screenshotting sections. Logical, defaults to false}
 

@@ -11,12 +11,14 @@
 #' @export
 #'
 predict_gam = function(model,
-                       plot_across = "doy",
+                       plot_by = "doy",
                        across_increment = 1,
                        quant_trimming = 0.01,
-                       verbose = TRUE){ ## Defines quantile-based trimming before predicting the `plot_across` variable.
-  ##                    For example, if this is 0.01 and plot_across is "doy", predictions will range between the 0.01 and 0.99 quantiles of observed doy within each combination of factor predictors
+                       verbose = TRUE){ ## Defines quantile-based trimming before predicting the `plot_by` variable.
+  ##                    For example, if this is 0.01 and plot_by is "doy", predictions will range between the 0.01 and 0.99 quantiles of observed doy within each combination of factor predictors
   validate_model(model)
+  validate_variable(plot_by, names(model$model))
+  validate_number(across_increment)
   validate_flag(verbose)
 
   if(!(is.numeric(across_increment) & length(across_increment) == 1)){
@@ -30,24 +32,24 @@ predict_gam = function(model,
   ## parse terms
   terms_ls = VizSeasonalGams::parse_terms(model)
   predictors_factor = terms_ls$predictors_factor
-  predictors_numeric = setdiff(terms_ls$predictors_numeric, plot_across)
+  predictors_numeric = setdiff(terms_ls$predictors_numeric, plot_by)
   response = terms_ls$response
 
   dat_model = model$model |>
     dplyr::select(-tidyselect::any_of(response))
 
   helper_sequencer = function(dat,
-                              plot_across_var = plot_across){tidyr::expand_grid(seq(stats::quantile(dat[[plot_across_var]], quant_trimming),
-                                                          stats::quantile(dat[[plot_across_var]], 1 - quant_trimming),
+                              plot_by_var = plot_by){tidyr::expand_grid(seq(stats::quantile(dat[[plot_by_var]], quant_trimming),
+                                                          stats::quantile(dat[[plot_by_var]], 1 - quant_trimming),
                                                           by = across_increment))}
 
   pred_df = dat_model |>
-    dplyr::select(tidyselect::any_of(c(predictors_factor, plot_across))) |>
+    dplyr::select(tidyselect::any_of(c(predictors_factor, plot_by))) |>
     tidyr::nest(.by = tidyselect::any_of(predictors_factor)) |>
     dplyr::mutate(pred_mats = purrr::map(.data$data, helper_sequencer)) |>
     dplyr::select(-tidyselect::any_of("data")) |>
     tidyr::unnest("pred_mats")
-  names(pred_df)[ncol(pred_df)] = plot_across
+  names(pred_df)[ncol(pred_df)] = plot_by
 
   predictors_list = list()
   if(verbose & length(predictors_numeric)>0){

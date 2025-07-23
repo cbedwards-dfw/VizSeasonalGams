@@ -6,6 +6,9 @@
 #'
 #' @param panels_df A dataframe from plot_seasonal_gam_panels.
 #' @param column_var 1 dimensional character vector of variable defining the columns of the grid. Must be factor variable present in `panels_df`.
+#' @param scales_x Allows shared x limits for all panels within each column ("fixed_column"), or each row ("fixed_row"), each column x row combinations ("fixed_combination"; useful when more than one panel matches a row x column criterion). Defaults to allowing each panel to have its own x scale ("free").
+#' @param scales_y As `scales_x`, but for y limits. Is not applied to the optional coverage plots within each panel.
+#' @param scales_y_coverage As `scales_y`, but only applied to optional coverage plots.
 #' @param row_var as `column_var`, but defines the rows of the grid
 #' @param panel_titles Include all panel information in panel title even if redundant with rows/panels? Useful for debugging or screenshotting sections. Logical, defaults to false
 #' @param col_title_ratio How much bigger should content be than the column labels? Numeric, defaults to 30.
@@ -20,7 +23,11 @@
 #'
 grid_panels = function(
     panels_df,
-    column_var, row_var,
+    column_var,
+    row_var,
+    scales_x = c("free", "fixed_column", "fixed_row", "fixed_all", "fixed_combination"),
+    scales_y = c("free", "fixed_column", "fixed_row", "fixed_all", "fixed_combination"),
+    scales_y_coverage = c("free", "fixed_column", "fixed_row", "fixed_all", "fixed_combination"),
     panel_titles = FALSE,
     col_title_ratio = 30,
     row_title_ratio = 30,
@@ -30,25 +37,47 @@ grid_panels = function(
     title_size = 8
 
 ){
+  ## validation
+  validate_variable(column_var, setdiff(names(panels_df), "plot"))
+  validate_variable(row_var, setdiff(names(panels_df), "plot"))
 
+  scales_x = validate_scale(scales_x)
+  scales_y = validate_scale(scales_y)
+  scales_y_coverage = validate_scale(scales_y_coverage)
+
+  validate_flag(panel_titles)
+  validate_number(col_title_ratio, limits_exclusive = c(0, NA))
+  validate_number(row_title_ratio, limits_exclusive = c(0, NA))
+  validate_number(font_size, limits_exclusive = c(0, NA))
+  validate_optional_char(new_y_label)
+  validate_optional_char(new_x_label)
+  validate_number(title_size, limits_exclusive = c(0, NA))
+
+
+  panels_df = apply_panel_limits(panels_df,
+                                 scales_x = scales_x,
+                                 scales_y = scales_y,
+                                 column_var = column_var,
+                                 row_var = row_var,
+                                 scales_y_coverage = scales_y_coverage)
 
   row_vals = sort(unique(panels_df[[row_var]]))
   column_vals = sort(unique(panels_df[[column_var]]))
 
+  ## calculating plot dimensions to support scales_x and scales_y
+
   list_figs = rep(list(ggplot2::ggplot() + ggplot2::theme_void()),
                   length(row_vals) * length(column_vals))
 
-  # panels_matrix = wrap_plots(list_figs,
-  #                            ncol = length(column_vals), nrow = length(row_vals), byrow = TRUE)
 
-  ##
   for(i_row in 1:length(row_vals)){
     for(i_column in 1:length(column_vals)){
       ind = (i_row - 1) * length(column_vals) + i_column
 
       cur_plot = panels_df |>
         dplyr::filter(.data[[column_var]] == as.character(column_vals[i_column]),
-               .data[[row_var]] == as.character(row_vals[i_row]))
+                      .data[[row_var]] == as.character(row_vals[i_row]))
+
 
       if(nrow(cur_plot) == 1 & !panel_titles){
         ## overwrite lone wolf titles
@@ -111,24 +140,11 @@ grid_panels = function(
           dplyr::pull(.data$plot) |>
           patchwork::wrap_plots()
       }
-      ## janky title handling. Consider complex story with multiple miniplots
-      # if(nrow(cur.plot) == 1 & !panel_titles){
-      #   ## overwrite lone wolf titles
-      #   ## structure of subpanels is tricky: could be patchwork with histogram on bottom,
-      #   ## or just ggplot
-      #   ##
-      #   if("patchwork" %in% class(list_figs[[1]][[1]])){
-      #     list_figs[[ind]][[1]][[1]] = list_figs[[ind]][[1]][[1]] + ggtitle("")
-      #   } else {
-      #     list_figs[[ind]][[1]] = list_figs[[ind]][[1]] + ggtitle("")
-      #   }
-      # }
-
     }
   }
 
   panels_matrix = patchwork::wrap_plots(list_figs,
-                             ncol = length(column_vals), nrow = length(row_vals), byrow = TRUE)+
+                                        ncol = length(column_vals), nrow = length(row_vals), byrow = TRUE)+
     patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(plot.title = ggplot2::element_text(size = title_size))
 

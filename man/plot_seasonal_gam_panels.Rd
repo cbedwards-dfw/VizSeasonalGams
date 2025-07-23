@@ -7,7 +7,7 @@
 plot_seasonal_gam_panels(
   model,
   color_by = NULL,
-  plot_across = "doy",
+  plot_by = "doy",
   across_increment = 1,
   quant_trimming = 0.01,
   include_cis = TRUE,
@@ -21,9 +21,9 @@ plot_seasonal_gam_panels(
 
 \item{color_by}{Variable to color predictions by. Defaults to NULL, in which case curves are black and each panel has only one set of predictions. When used, color_by necessarily reduces dimensionalality of output by 1.}
 
-\item{plot_across}{A single string specifying the variable to plot across. Defaults to "doy".}
+\item{plot_by}{A single string specifying the variable to plot across. Defaults to "doy".}
 
-\item{across_increment}{A numeric value specifying the increment for the plot_across variable. Defaults to 1.}
+\item{across_increment}{A numeric value specifying the increment for the plot_by variable. Defaults to 1.}
 
 \item{quant_trimming}{A numeric value between 0 and 1 defining quantile-based trimming -- this provides a buffer between the outmost observations and the outmost plot predictions. Defaults to 0.01; increase if plot predictions at the edges are misleading.}
 
@@ -31,7 +31,7 @@ plot_seasonal_gam_panels(
 
 \item{plot_coverage}{Add histogram at bottom of each panel with data coverage? Logical, defaults to TRUE.}
 
-\item{breaks_x}{Number of ticks to use on the X axis, useful to ensure text is legible. Numeric, defaults to 3.}
+\item{breaks_x}{Approximate number of ticks to use on the X axis, useful to ensure text is legible. Numeric, defaults to 3. Because of quirks in how ggplot works (and the patchwork combination process), plots may not show exactly \code{breaks_x} number of ticks, but you can still manipulate actual tick number by changing \code{breaks_x}.}
 
 \item{verbose}{Provide context? Logical, defaults to TRUE}
 }
@@ -40,7 +40,7 @@ Tibble, with a column for each factor predictor in \code{model}. \verb{$plot} co
 }
 \description{
 Creates a tibble with all represented combinations of factor variables in the data,
-and includes a model of model predictions across a key continuous variable (\code{plot_across}, defaults to "doy")
+and includes a model of model predictions across a key continuous variable (\code{plot_by}, defaults to "doy")
 while setting other continuous variables to their median. Because these plots are within a tibble framework, it is easy to filter to desired combinations of
 variables and plot those. (e.g., model might fit 20 years for 13 spatial units, tibble
 can rapidly be filtered to just the years of a desired spatial unit, or all spatial units

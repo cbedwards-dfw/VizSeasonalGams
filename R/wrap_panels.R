@@ -10,7 +10,7 @@
 #' @param title_size size of panel title text. Numeric, defaults to 8.
 #'
 #' @returns
-#' A wrapped plot object with row and column labels_
+#' A wrapped plot object with row and column labels.
 #'
 #' @export
 wrap_panels = function(panel_df, ## dataframe from plot_seasonal_gam_panels
@@ -21,7 +21,7 @@ wrap_panels = function(panel_df, ## dataframe from plot_seasonal_gam_panels
   terms_constant = names(panel_df)[apply(panel_df, 2, function(x){length(unique(x))})==1]
 
   title_terms = panel_df |>
-    dplyr::select(-tidyselect::any_of("plot")) |>
+    dplyr::select(-tidyselect::any_of(".plot")) |>
     dplyr::select(-tidyselect::any_of(terms_constant))
 
   annotation_text = panel_df |>
@@ -38,20 +38,21 @@ wrap_panels = function(panel_df, ## dataframe from plot_seasonal_gam_panels
 
     title_text = paste0(paste0(names(title_text), ": ", title_text), collapse = " | ")
 
-    if("patchwork" %in% class(panel_df$plot[[i]])){
-      panel_df$plot[[i]][[1]] =
-        plot.modified = panel_df$plot[[i]][[1]] +
+    if("patchwork" %in% class(panel_df$.plot[[i]])){
+      panel_df$.plot[[i]][[1]] =
+        plot.modified = panel_df$.plot[[i]][[1]] +
         ggplot2::ggtitle(title_text)+
         ggplot2::theme(plot.title = ggplot2::element_text(size = title_size))
     } else {
-      panel_df$plot[[i]] =
-        plot.modified = panel_df$plot[[i]] +
+      panel_df$.plot[[i]] =
+        plot.modified = panel_df$.plot[[i]] +
         ggplot2::ggtitle(title_text)+
         ggplot2::theme(plot.title = ggplot2::element_text(size = title_size))
     }
   }
 
-  res = patchwork::wrap_plots(panel_df$plot, ncol = ncol, nrow = nrow)
+  res = patchwork::wrap_plots(panel_df$.plot, ncol = ncol, nrow = nrow)+
+    plot_layout(guides = "collect")
 
   if(length(terms_constant) > 0){
     res = res + patchwork::plot_annotation(subtitle = annotation_text)

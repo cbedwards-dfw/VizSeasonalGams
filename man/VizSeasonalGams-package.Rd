@@ -12,6 +12,7 @@ What the package does (one paragraph).
 Useful links:
 \itemize{
   \item \url{https://github.com/cbedwards-dfw/VizSeasonalGams}
+  \item \url{https://cbedwards-dfw.github.io/VizSeasonalGams/}
   \item Report bugs at \url{https://github.com/cbedwards-dfw/VizSeasonalGams/issues}
 }
 

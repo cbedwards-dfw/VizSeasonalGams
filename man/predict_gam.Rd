@@ -13,7 +13,7 @@ predict_gam(
 )
 }
 \arguments{
-\item{model}{A GAM model object from mgcv}
+\item{model}{A GAM model object from mgcv, or a named list of fitted mgcv models}
 
 \item{plot_by}{A single string specifying the variable to plot across. Defaults to "doy".}
 

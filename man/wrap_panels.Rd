@@ -16,7 +16,7 @@ wrap_panels(panel_df, ncol = NULL, nrow = NULL, title_size = 8)
 \item{title_size}{size of panel title text. Numeric, defaults to 8.}
 }
 \value{
-A wrapped plot object with row and column labels_
+A wrapped plot object with row and column labels.
 }
 \description{
 Analog to facet_wrap() for the seasonal gam panels. If there are two predictors

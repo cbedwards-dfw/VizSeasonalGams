@@ -13,11 +13,13 @@ plot_seasonal_gam_panels(
   include_cis = TRUE,
   plot_coverage = TRUE,
   breaks_x = 3,
+  model_label = "model",
+  labeler_x = VizSeasonalGams::doy_2md,
   verbose = TRUE
 )
 }
 \arguments{
-\item{model}{A GAM model object from mgcv}
+\item{model}{A GAM model object from mgcv, or a named list of fitted mgcv models}
 
 \item{color_by}{Variable to color predictions by. Defaults to NULL, in which case curves are black and each panel has only one set of predictions. When used, color_by necessarily reduces dimensionalality of output by 1.}
 
@@ -33,10 +35,14 @@ plot_seasonal_gam_panels(
 
 \item{breaks_x}{Approximate number of ticks to use on the X axis, useful to ensure text is legible. Numeric, defaults to 3. Because of quirks in how ggplot works (and the patchwork combination process), plots may not show exactly \code{breaks_x} number of ticks, but you can still manipulate actual tick number by changing \code{breaks_x}.}
 
+\item{model_label}{Name to apply to the model identifier column generated when providing a list of mgcv models to \code{model} argument.}
+
+\item{labeler_x}{Function used to apply x axis labels. Defaults to "doy_2md" which turns numeric day of year into month and day. A value of NULL will use identity.}
+
 \item{verbose}{Provide context? Logical, defaults to TRUE}
 }
 \value{
-Tibble, with a column for each factor predictor in \code{model}. \verb{$plot} column contains the plot panels.
+Tibble, with a column for each factor predictor in \code{model}. \verb{$.plot} column contains the plot panels.
 }
 \description{
 Creates a tibble with all represented combinations of factor variables in the data,
@@ -45,4 +51,6 @@ while setting other continuous variables to their median. Because these plots ar
 variables and plot those. (e.g., model might fit 20 years for 13 spatial units, tibble
 can rapidly be filtered to just the years of a desired spatial unit, or all spatial units
 of a desired year).
+
+If \code{model} is a named list of mgcv models, the result is a combination of panel tibbles for each fitted model, with an additional column \verb{$model} to identify the models used to generate each panel. This can make it easy to compare how modeling choices change predictions.
 }

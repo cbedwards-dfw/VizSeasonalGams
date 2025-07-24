@@ -13,16 +13,16 @@
 #' @export
 
 parse_terms = function(model){
+
   validate_model(model)
 
-  all_terms = names(model$var.summary)
+  terms = attr(terms(model), "dataClasses")
   response = as.character(model$formula)[2]
-  dat_model = model$model |>
-    dplyr::select(-dplyr::any_of(response))
+  pred_terms = terms[names(terms) != response]
 
-  predictors = setdiff(all_terms, response)
-  predictors_factor = names(dat_model)[sapply(dat_model, function(x){is.factor(x) | is.character(x)})]
-  predictors_numeric = setdiff(predictors, predictors_factor)
+  predictors_factor = names(pred_terms)[pred_terms == "factor"]
+  predictors_numeric = names(pred_terms)[pred_terms == "numeric"]
+
   return(list(response = response,
               predictors_factor = predictors_factor,
               predictors_numeric = predictors_numeric))

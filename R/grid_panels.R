@@ -38,8 +38,8 @@ grid_panels = function(
 
 ){
   ## validation
-  validate_variable(column_var, setdiff(names(panels_df), "plot"))
-  validate_variable(row_var, setdiff(names(panels_df), "plot"))
+  validate_variable(column_var, setdiff(names(panels_df), ".plot"))
+  validate_variable(row_var, setdiff(names(panels_df), ".plot"))
 
   scales_x = validate_scale(scales_x)
   scales_y = validate_scale(scales_y)
@@ -82,10 +82,10 @@ grid_panels = function(
       if(nrow(cur_plot) == 1 & !panel_titles){
         ## overwrite lone wolf titles
         ## index depth depends on if individual plots are patchworks with histogram panel or not
-        if("patchwork" %in% class(cur_plot$plot[[1]])){
-          cur_plot$plot[[1]][[1]] = cur_plot$plot[[1]][[1]] + ggplot2::ggtitle("")
+        if("patchwork" %in% class(cur_plot$.plot[[1]])){
+          cur_plot$.plot[[1]][[1]] = cur_plot$.plot[[1]][[1]] + ggplot2::ggtitle("")
         } else {
-          cur_plot$plot[[1]] = cur_plot$plot[[1]] + ggplot2::ggtitle("")
+          cur_plot$.plot[[1]] = cur_plot$.plot[[1]] + ggplot2::ggtitle("")
         }
       }
 
@@ -95,18 +95,18 @@ grid_panels = function(
         for(i_subplot in 1:length(plot_labels)){
           if(!is.null(new_y_label)){
             if("patchwork" %in% class(cur_plot$plot[[1]])){
-              cur_plot$plot[[i_subplot]][[1]] = cur_plot$plot[[i_subplot]][[1]] + ggplot2::ylab(new_y_label)
+              cur_plot$.plot[[i_subplot]][[1]] = cur_plot$.plot[[i_subplot]][[1]] + ggplot2::ylab(new_y_label)
             } else {
-              cur_plot$plot[[i_subplot]] = cur_plot$plot[[i_subplot]] + ggplot2::ylab(new_y_label)
+              cur_plot$.plot[[i_subplot]] = cur_plot$.plot[[i_subplot]] + ggplot2::ylab(new_y_label)
             }
           }
 
           if(!is.null(new_x_label)){
-            if("patchwork" %in% class(cur_plot$plot[[1]])){
-              cur_plot$plot[[i_subplot]][[1]] = cur_plot$plot[[i_subplot]][[1]] + ggplot2::xlab(new_x_label)
-              cur_plot$plot[[i_subplot]][[2]] = cur_plot$plot[[i_subplot]][[2]] + ggplot2::xlab(new_x_label)
+            if("patchwork" %in% class(cur_plot$.plot[[1]])){
+              cur_plot$.plot[[i_subplot]][[1]] = cur_plot$.plot[[i_subplot]][[1]] + ggplot2::xlab(new_x_label)
+              cur_plot$.plot[[i_subplot]][[2]] = cur_plot$.plot[[i_subplot]][[2]] + ggplot2::xlab(new_x_label)
             } else {
-              cur_plot$plot[[i_subplot]] = cur_plot$plot[[i_subplot]] + ggplot2::xlab(new_x_label)
+              cur_plot$.plot[[i_subplot]] = cur_plot$.plot[[i_subplot]] + ggplot2::xlab(new_x_label)
             }
           }
         }
@@ -116,7 +116,7 @@ grid_panels = function(
         # rework multi-subpanel titles
         ## new titles
         vars_subplot = setdiff(names(cur_plot), c(column_var, row_var))
-        vars_subplot = setdiff(vars_subplot, "plot")
+        vars_subplot = setdiff(vars_subplot, ".plot")
         plot_labels = cur_plot |>
           dplyr::select(tidyselect::any_of(vars_subplot)) |>
           dplyr::mutate(dplyr::across(tidyselect::everything(), ~as.character(.x)))
@@ -127,17 +127,17 @@ grid_panels = function(
 
         ## replace the titles
         for(i_subplot in 1:length(plot_labels)){
-          if("patchwork" %in% class(cur_plot$plot[[1]])){
-            cur_plot$plot[[i_subplot]][[1]] = cur_plot$plot[[i_subplot]][[1]] + ggplot2::ggtitle(plot_labels[i_subplot])
+          if("patchwork" %in% class(cur_plot$.plot[[1]])){
+            cur_plot$.plot[[i_subplot]][[1]] = cur_plot$.plot[[i_subplot]][[1]] + ggplot2::ggtitle(plot_labels[i_subplot])
           } else {
-            cur_plot$plot[[i_subplot]] = cur_plot$plot[[i_subplot]] + ggplot2::ggtitle(plot_labels[i_subplot])
+            cur_plot$.plot[[i_subplot]] = cur_plot$.plot[[i_subplot]] + ggplot2::ggtitle(plot_labels[i_subplot])
           }
         }
       }
 
       if(nrow(cur_plot) >0){
         list_figs[[ind]] = cur_plot |>
-          dplyr::pull(.data$plot) |>
+          dplyr::pull(.data$.plot) |>
           patchwork::wrap_plots()
       }
     }

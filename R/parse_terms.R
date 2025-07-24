@@ -20,7 +20,7 @@ parse_terms = function(model){
   response = as.character(model$formula)[2]
   pred_terms = terms[names(terms) != response]
 
-  predictors_factor = names(pred_terms)[pred_terms == "factor"]
+  predictors_factor = names(pred_terms)[pred_terms %in% c("factor", "character")]
   predictors_numeric = names(pred_terms)[pred_terms == "numeric"]
 
   return(list(response = response,

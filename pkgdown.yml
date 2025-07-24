@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.1.3
+pkgdown_sha: ~
+articles:
+  getting-started: getting-started.html
+last_built: 2025-07-24T21:19Z
+urls:
+  reference: https://cbedwards-dfw.github.io/VizSeasonalGams/reference
+  article: https://cbedwards-dfw.github.io/VizSeasonalGams/articles

@@ -17,22 +17,19 @@ parse_terms = function(model){
   validate_model(model)
 
   terms = attr(terms(model), "dataClasses")
-  ## deal with offsets
+  ## deal with offset
   term_names = names(terms)
-  if(length(grep("offset", term_names))>0){
-    ind_offsets = grep("offset", term_names)
-    term_names[ind_offsets] = gsub(".*[(]", "", term_names[ind_offsets])
-    term_names[ind_offsets] = gsub("[)].*", "", term_names[ind_offsets])
-    names(terms) = term_names
-  }
 
   response = as.character(model$formula)[2]
+  predictors_offset = grep("offset[(].*", names(terms), value = TRUE)
   pred_terms = terms[names(terms) != response]
+  pred_terms = pred_terms[!grepl("offset[(].*", names(pred_terms))]
 
   predictors_factor = names(pred_terms)[pred_terms %in% c("factor", "character")]
   predictors_numeric = names(pred_terms)[pred_terms == "numeric"]
 
   return(list(response = response,
+              predictors_offset = predictors_offset,
               predictors_factor = predictors_factor,
               predictors_numeric = predictors_numeric))
 }

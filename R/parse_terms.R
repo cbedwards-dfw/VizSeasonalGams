@@ -21,8 +21,8 @@ parse_terms = function(model){
   term_names = names(terms)
   if(length(grep("offset", term_names))>0){
     ind_offsets = grep("offset", term_names)
-    term_names[ind.offsets] = gsub(".*[(]", "", term_names[ind.offsets])
-    term_names[ind.offsets] = gsub("[)].*", "", term_names[ind.offsets])
+    term_names[ind_offsets] = gsub(".*[(]", "", term_names[ind_offsets])
+    term_names[ind_offsets] = gsub("[)].*", "", term_names[ind_offsets])
     names(terms) = term_names
   }
 

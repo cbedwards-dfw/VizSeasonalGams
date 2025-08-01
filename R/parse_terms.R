@@ -17,6 +17,15 @@ parse_terms = function(model){
   validate_model(model)
 
   terms = attr(terms(model), "dataClasses")
+  ## deal with offsets
+  term_names = names(terms)
+  if(length(grep("offset", term_names))>0){
+    ind_offsets = grep("offset", term_names)
+    term_names[ind.offsets] = gsub(".*[(]", "", term_names[ind.offsets])
+    term_names[ind.offsets] = gsub("[)].*", "", term_names[ind.offsets])
+    names(terms) = term_names
+  }
+
   response = as.character(model$formula)[2]
   pred_terms = terms[names(terms) != response]
 
